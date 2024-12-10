@@ -88,6 +88,19 @@ const styles = {
     boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
     zIndex: 1000,
   },
+  imageContainer: {
+    width: "80px", 
+    height: "80px", 
+    overflow: "hidden", 
+    borderRadius: "8px", 
+    marginBottom: "10px",
+  },
+  image: {
+    width: "100%", 
+    height: "100%", 
+    objectFit: "cover", 
+    
+  },
   header: {
     fontSize: "18px",
     marginBottom: "10px",
