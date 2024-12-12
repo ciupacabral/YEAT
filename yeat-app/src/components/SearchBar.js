@@ -80,9 +80,9 @@ export default function SearchBar() {
             console.log(`Number of locations received: ${locations.length}`);
 
             // Log first location for debugging
-            if (locations.length > 0) {
-                console.log("First location:", locations[0]);
-            }
+            //if (locations.length > 0) {
+            //    console.log("First location:", locations[0]);
+            //}
 
             // Set the locations state
             setLocations(locations);
