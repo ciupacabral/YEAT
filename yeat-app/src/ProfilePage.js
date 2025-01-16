@@ -1,5 +1,6 @@
 import React from 'react';
-import History from './components/History.js'; // Import your History.js component
+import Favorites from './components/Favourites.js'; // Import the updated Favorites component
+import History from './components/History.js'; // Import the History component
 
 const ProfilePage = ({ onSearch }) => {
     return (
@@ -9,9 +10,12 @@ const ProfilePage = ({ onSearch }) => {
                 <header className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-900 text-center">Your Profile</h1>
                     <p className="text-gray-600 text-center">
-                        Explore your recent search history below.
+                        Explore your recent search history and saved favorites below.
                     </p>
                 </header>
+
+                {/* Favorites Section */}
+                <Favorites onSearch={onSearch} />
 
                 {/* History Section */}
                 <section className="bg-white shadow-md rounded-lg p-6">

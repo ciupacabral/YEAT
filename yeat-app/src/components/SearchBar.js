@@ -2,12 +2,10 @@ import { useState, useEffect } from "react";
 import { db, auth } from "./firebase"; // Firebase imports
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import { fetchLocations } from './apiService.js'
-import History from "./History"; // Import the LastSearches component
+import { processLocation } from './apiService.js'; // Import your API service
 
-export default function SearchBar() {
+export default function SearchBar({ onLocationSelect }) {
     const [inputValue, setInputValue] = useState("");
-    const [locations, setLocations] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("restaurant");
     const [user, setUser] = useState(null);
 
@@ -53,7 +51,7 @@ export default function SearchBar() {
         }
 
         try {
-            const data = await fetchLocations(category);
+            const data = await processLocation(selectedCategory, inputValue);
 
             console.log("Raw API Response:", data);
 
@@ -79,18 +77,14 @@ export default function SearchBar() {
 
             console.log(`Number of locations received: ${locations.length}`);
 
-            // Log first location for debugging
-            //if (locations.length > 0) {
-            //    console.log("First location:", locations[0]);
-            //}
-
             // Set the locations state
-            setLocations(locations);
+            onLocationSelect(locations);
         } catch (error) {
             console.error("Error handling search:", error);
-            setLocations([]);
+            onLocationSelect([]);
         }
     };
+
 
     const handleKeyPress = (e) => {
         if (e.key === "Enter") {
@@ -127,7 +121,7 @@ export default function SearchBar() {
                     name="search"
                     type="text"
                     placeholder="Where / what to eat..."
-                    className="block w-full h-16 rounded-md border-0 py-2 pl-8 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="block w-full h-16 rounded-md border-0 py-2 pl-8 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder :text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyPress}
@@ -151,9 +145,6 @@ export default function SearchBar() {
                     </select>
                 </div>
             </div>
-
-            {/* Render the LastSearches component */}
-
         </div>
     );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'; // Import React Router components
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Import React Router components
 import History from './components/History.js';
 import Navbar from './components/Navbar.js';
 import Banner from './components/Banner.js';
@@ -12,8 +12,10 @@ import DetaliiRestaurant from './components/DetaliiRestaurant.js';
 import './App.css';
 
 function App() {
-    const [selectedLocation, setSelectedLocation] = useState(null);
-
+    const [locations, setLocations] = useState([]); // State to hold locations
+    const handleLocationSelect = (locations) => {
+        setLocations(locations)
+    };
     return (
         <Router>
             <div className="App">
@@ -31,12 +33,12 @@ function App() {
                                 <Banner />
                                 <header className="App-header">
                                     <div className="search-bar">
-                                        <SearchBar onLocationSelect={setSelectedLocation} />
+                                        <SearchBar onLocationSelect={handleLocationSelect} />
                                     </div>
                                 </header>
                                 <main className="App-body">
                                     <div className="map">
-                                        <MapComponent onLocationSelect={setSelectedLocation} />
+                                        <MapComponent locations={locations} />
                                     </div>
                                 </main>
                                 <BackToTop />
