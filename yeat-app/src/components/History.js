@@ -37,13 +37,12 @@ export default function History({ onSearch }) {
             }
         });
 
-
         return () => unsubscribe(); // Clean up the listener
     }, []);
 
     const handleSearchClick = (search) => {
         if (onSearch) {
-            onSearch(search.input, search.category); // Pass the search data to the parent
+            onSearch(search.input, search.category); // Pass the search data to App.js's onSearch
         }
     };
 

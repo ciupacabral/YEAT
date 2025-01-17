@@ -14,6 +14,16 @@ module.exports = {
                 lightGray: '#FAFAFA',
                 accentRed: '#FF5252',
                 movuliu: '#550c55',
+                movuliu_background: '#6a2d6a',
+                primaryCoral: '#FF7043',
+                secondaryMagenta: '#550c55',
+                lightPeach: '#FFB39D',
+                softLavender: '#D8A7D9',
+                mutedTerracotta: '#D2695C',
+                darkPlum: '#3E0B3D',
+                lightCream: '#FFF8E1',
+                lighterOrange: '#FFB298'
+
             },
         },
     },

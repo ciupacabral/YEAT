@@ -5,8 +5,17 @@
 
 }
 
+body, .App {
+    background-color: #FFB298; /* Consistent dark background */
+    color: white; /* Ensure text is readable */
+}
+
 html, body {
     height: 100%; /* Make html and body full height */
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 .App {
@@ -17,7 +26,7 @@ html, body {
 }
 
 .App-header {
-    background-color: #404646;
+    background-color: #FFB298;
     padding: 20px; /* Add some padding */
     display: flex;
     flex-direction: column;
@@ -32,7 +41,7 @@ html, body {
     display: flex; /* Use flexbox for layout */
     justify-content: center; /* Center content */
     align-items: center; /* Center content */
-    background-color: #404646; /* Set background color */
+    background-color: #FFB298; /* Set background color */
 }
 
 
@@ -40,6 +49,10 @@ html, body {
     flex: 1;
     margin: auto; /* Center map */
     z-index: 0; /* Ensure it's behind other components */
+}
+
+.App-footer {
+    padding-top: 20px;
 }
 
 .App-link {
@@ -50,6 +63,40 @@ html, body {
     width: 50%; /* Adjust for larger screens */
     z-index: 0;
 }
+
+.map-container {
+    position: relative;
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 600px;
+    flex-direction: column;
+}
+
+.loading-svg {
+    width: 100px; /* Adjust size as needed */
+    height: 100px;
+    animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-text {
+    margin-top: 1rem;
+    font-size: 25px;
+    color: #550c55;
+    font-weight: 500;
+}
+
+
+
 
 @media (max-width: 600px) {
     .search-bar {

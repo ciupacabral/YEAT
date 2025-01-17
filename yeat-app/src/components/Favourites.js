@@ -78,7 +78,7 @@ export default function Favorites({ onSearch }) {
                                 </p>
                             )}
                         </div>
-                        <div className="p-4 bg-gray-200 text-center">
+                        <div className="p-4 bg-movuliu text-center">
                             <button
                                 className="text-primary hover:underline"
                                 onClick={() => handleMapClick(fav)}

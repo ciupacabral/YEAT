@@ -16,10 +16,40 @@ L.Icon.Default.mergeOptions({
 });
 
 const MapComponent = ({ locations }) => {
-    const position = [44.4268, 26.1025]; // Bucharest coordinates
+    const defaultPosition = [44.4268, 26.1025]; // Bucharest coordinates
     const mapRef = useRef(); // Create a ref to store the map instance
+    const [userLocation, setUserLocation] = useState(null); // Store user location
     const [user, setUser] = useState(null); // Manage user state
     const [favorites, setFavorites] = useState([]); // Store user's favorites
+
+    // Check if the location is saved in localStorage and set the userLocation state
+    useEffect(() => {
+        const savedLocation = JSON.parse(localStorage.getItem('userLocation'));
+
+        if (savedLocation) {
+            console.log("Using saved location from localStorage:", savedLocation);
+            setUserLocation([savedLocation.latitude, savedLocation.longitude]);
+        } else {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        console.log("Using current geolocation:", { latitude, longitude });
+                        setUserLocation([latitude, longitude]);
+                        localStorage.setItem('userLocation', JSON.stringify({ latitude, longitude })); // Save to localStorage
+                    },
+                    (err) => {
+                        console.error("Error fetching user location:", err.message);
+                        setUserLocation(defaultPosition); // Fallback to Bucharest if geolocation fails
+                    },
+                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+                );
+            } else {
+                console.error("Geolocation is not supported by this browser.");
+                setUserLocation(defaultPosition); // Fallback to Bucharest if geolocation is not supported
+            }
+        }
+    }, []);
 
     // Handle user authentication state
     useEffect(() => {
@@ -102,11 +132,29 @@ const MapComponent = ({ locations }) => {
         return favorites.some(fav => fav.dataId === location.dataId || fav.tags.name === location.tags.name);
     };
 
+    // Create a custom icon for the user's location
+    const userLocationIcon = new L.Icon({
+        iconUrl: 'yeat_back_top.svg', // Custom green dot icon
+        iconSize: [50, 50],
+        iconAnchor: [12, 12], // Anchor the icon in the center
+        popupAnchor: [15, -10], // Popup anchor point
+    });
+
+    // Debug: Log userLocation
+    useEffect(() => {
+        console.log("User Location State:", userLocation);
+    }, [userLocation]);
+
+    // Ensure the map is only rendered once the userLocation is available
+    if (!userLocation) {
+        return <div>Loading map...</div>;
+    }
+
     return (
         <div id="map-container">
             <MapContainer
                 id="map"
-                center={position}
+                center={userLocation || defaultPosition} // Center map on user's location if available
                 zoom={13}
                 style={{ height: '100%', width: '100%' }} // Set height to 100% to fill the container
                 whenCreated={mapInstance => { mapRef.current = mapInstance }} // Store the map instance
@@ -115,16 +163,21 @@ const MapComponent = ({ locations }) => {
                     url='https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
                 />
+                {/* Pin the user's location with custom icon */}
+                <Marker position={userLocation} icon={userLocationIcon}>
+                    <Popup>This is you! :)</Popup>
+                </Marker>
+
                 {locations.map(location => (
-                    <Marker key={location.id} position={[location.lat, location.lon]}>
+                    <Marker key={`${location.id}-${location.lat}-${location.lon}`}
+        position={[location.lat, location.lon]}>
                         <Popup>
                             <div>
                                 <strong>{location.tags.name}</strong><br />
                                 {location.tags.opening_hours ? `Opening Hours: ${location.tags.opening_hours}` : 'Opening Hours: Not specified'}<br />
                                 {location.tags['addr:street'] ? `Street: ${location.tags['addr:street']}` : ''}<br />
                                 {location.tags['addr:city'] ? `City: ${location.tags['addr:city']}` : ''}<br />
-                                {location.tags['addr:postcode'] ? `Postcode: ${location.tags['addr:postcode']}` : ''}
-                                <br />
+                                {location.tags['addr:postcode'] ? `Postcode: ${location.tags['addr:postcode']}` : ''}<br />
                                 <button
                                     onClick={() => toggleFavorite(location)}
                                     style={{

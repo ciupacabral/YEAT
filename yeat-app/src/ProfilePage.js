@@ -4,13 +4,13 @@ import History from './components/History.js'; // Import the History component
 
 const ProfilePage = ({ onSearch }) => {
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-lighterOrange">
             <div className="max-w-5xl mx-auto py-10 px-4">
                 {/* Profile Header */}
                 <header className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-900 text-center">Your Profile</h1>
-                    <p className="text-gray-600 text-center">
-                        Explore your recent search history and saved favorites below.
+                    <p className="text-xl text-gray-800 text-center">
+                        Explore your saved favorites and recent search history below.
                     </p>
                 </header>
 
