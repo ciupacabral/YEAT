@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from './firebase'; // Firebase imports
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -21,7 +21,7 @@ export default function Favorites({ onSearch }) {
                     const data = userDoc.data();
                     setFavorites(data.favorites || []); // Fetch the `favorites` field or fallback to an empty array
                 } else {
-                    setError('User data not found.');
+                    setError('User  data not found.');
                 }
             } catch (err) {
                 setError('Failed to fetch favorites.');
@@ -35,7 +35,7 @@ export default function Favorites({ onSearch }) {
                 setError(''); // Clear any previous error
                 fetchFavorites(user); // Fetch user data
             } else {
-                setError('User not logged in.');
+                setError('User  not logged in.');
                 setLoading(false);
             }
         });
@@ -51,6 +51,26 @@ export default function Favorites({ onSearch }) {
         setSelectedLocation(null); // Close the popup
     };
 
+    const removeFavorite = async (id) => {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        try {
+            const userDocRef = doc(db, 'users', user.uid);
+            const userDoc = await getDoc(userDocRef);
+            const existingFavorites = userDoc.data().favorites || [];
+            const updatedFavorites = existingFavorites.filter(fav => fav.id !== id);
+
+            await updateDoc(userDocRef, {
+                favorites: updatedFavorites,
+            });
+
+            setFavorites(updatedFavorites); // Update local state
+        } catch (error) {
+            console.error("Error removing favorite:", error);
+        }
+    };
+
     return (
         <section className="bg-white shadow-md rounded-lg p-6 mb-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Favorites</h2>
@@ -60,12 +80,9 @@ export default function Favorites({ onSearch }) {
                 <p className="text-gray-600">No favorites found. Start adding some!</p>
             )}
             <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {favorites.map((fav, index) => (
-                    <li
-                        key={index}
-                        className="bg-gray-100 shadow-md rounded-lg overflow-hidden"
-                    >
-                        <div className="p-4">
+                {favorites.map((fav) => (
+                    <li key={fav.id} className="bg-gray-100 shadow-md rounded-lg overflow-hidden flex flex-col">
+                        <div className="p-4 flex-grow">
                             <h3 className="font-medium text-gray-800 text-lg">{fav.tags.name}</h3>
                             {fav.tags['addr:street'] && (
                                 <p className="text-sm text-gray-600">
@@ -78,17 +95,24 @@ export default function Favorites({ onSearch }) {
                                 </p>
                             )}
                         </div>
-                        <div className="p-4 bg-movuliu text-center">
+                        <div className="p-4 bg-movuliu text-center mt-auto">  {/* mt-auto pushes this section to the bottom */}
                             <button
                                 className="text-primary hover:underline"
                                 onClick={() => handleMapClick(fav)}
                             >
                                 See on Map
                             </button>
+                            <button
+                                className="text-red-500 hover:underline ml-2"
+                                onClick={() => removeFavorite(fav.id)}
+                            >
+                                Remove
+                            </button>
                         </div>
                     </li>
                 ))}
             </ul>
+
 
             {/* Map Popup */}
             {selectedLocation && (

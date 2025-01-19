@@ -91,13 +91,13 @@ const MapComponent = ({ locations }) => {
             }
 
             const existingFavorites = userDoc.data().favorites || [];
-            const isFavorite = existingFavorites.some(fav => fav.dataId === location.dataId || fav.tags.name === location.tags.name);
+            const isFavorite = existingFavorites.some(fav => fav.id === location.dataId || fav.tags.name === location.tags.name);
 
             let updatedFavorites;
 
             if (isFavorite) {
                 // Remove from favorites
-                updatedFavorites = existingFavorites.filter(fav => fav.dataId !== location.dataId && fav.tags.name !== location.tags.name);
+                updatedFavorites = existingFavorites.filter(fav => fav.id !== location.dataId && fav.tags.name !== location.tags.name);
             } else {
                 // Add to favorites
                 updatedFavorites = [...existingFavorites, location];
@@ -129,7 +129,7 @@ const MapComponent = ({ locations }) => {
     }, [locations]); // Run this effect when locations change
 
     const isFavorite = (location) => {
-        return favorites.some(fav => fav.dataId === location.dataId || fav.tags.name === location.tags.name);
+        return favorites.some(fav => fav.id === location.dataId || fav.tags.name === location.tags.name);
     };
 
     // Create a custom icon for the user's location
